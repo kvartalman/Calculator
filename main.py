@@ -21,7 +21,7 @@ def change_sign():
 
 def input_digit(symbol):
     elements = entry.get()
-    if len(elements) <= 13:
+    if len(elements) <= 12:
         if symbol not in '/*+-':
             entry.insert(END, symbol)
         elif symbol in '/*+-' and len(elements) > 0:
