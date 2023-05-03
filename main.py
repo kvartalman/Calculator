@@ -8,9 +8,9 @@ window.minsize(200, 300)
 window.maxsize(200, 300)
 
 
-def change_sign():                   # Меняем знак числа
+def change_sign():
     digit = entry.get()
-    if digit:                        # Делаем только если не в поле ввода что-то было
+    if digit:
         if digit[0] == '-':
             digit = digit[1:]
         else:
@@ -21,9 +21,9 @@ def change_sign():                   # Меняем знак числа
 
 def input_digit(symbol):
     elements = entry.get()
-    if len(elements) <= 13:                              # Поле ввода ограничено 13-ю символами
+    if len(elements) <= 13:
         if symbol not in '/*+-':
-            entry.insert(END, symbol)                    # если цифра, то вводим
+            entry.insert(END, symbol)
         elif symbol in '/*+-' and len(elements) > 0:
             count = 0
             for i in elements:
@@ -45,17 +45,17 @@ def input_digit(symbol):
                 calculate(symbol)
 
 
-def clear():                         # Очистка поля ввода
+def clear():
     entry.delete(0, END)
 
 
-def clear_last():                    # Удаление последнего элемента поля ввода
+def clear_last():
     elements = entry.get()
     entry.delete(len(elements) - 1)
 
 
-def calculate(symbol=''):                 # Вызывается при нажатии знака "равно" или использовании
-    elements = entry.get()       # -1231241/1231231
+def calculate(symbol=''):
+    elements = entry.get()
     math_signs = '+/-*'
     has_sign = False
     for i in elements[1:]:
@@ -71,8 +71,8 @@ def calculate(symbol=''):                 # Вызывается при нажа
             if elements[i].isdigit() or elements[i] == '.':
                 temp += elements[i]
             elif elements[i] in '*+/-' and elements[i - 1].isdigit():
-                digits.append(float(temp))           # если calculate вызывается со знаком равно - просто считаем, а если с
-                temp = ''                          # другим знаком - этот знак добавим в конце выражения
+                digits.append(float(temp))
+                temp = ''
                 sign += elements[i]
             elif elements[i] == '-' and elements[i - 1] in '*/-+' and elements[i + 1].isdigit():
                 temp += elements[i]
