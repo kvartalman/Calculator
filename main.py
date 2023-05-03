@@ -60,7 +60,7 @@ def calculate(symbol=''):                 # Вызывается при нажа
         if i in math_signs:
             has_sign = True
             break
-    if elements and has_sign:
+    if elements and has_sign and elements[-1].isdigit():
         clear()
         digits = []
         temp = elements[0]
