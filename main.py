@@ -116,7 +116,7 @@ def calc_div(a, b):
     return round(a / b, 11)
 
 
-entry = Entry(window, width=13, font=('', 20))
+entry = Entry(window, width=13, font=('', 20), justify=RIGHT)
 entry.place(x=0, y=5)
 
 button1 = Button(window, bg='black', fg='yellow', text='1', command=lambda: input_digit('1'))
