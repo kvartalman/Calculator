@@ -39,6 +39,8 @@ def input_digit(symbol):
             elif count == 2:
                 if elements.startswith('-') and symbol == '-' and elements[-1] in '*/+-':
                     entry.insert(END, symbol)
+                elif elements[-1].isdigit():
+                    calculate(symbol)
             elif count > 2 and elements.count('-') == 2:
                 calculate(symbol)
 
