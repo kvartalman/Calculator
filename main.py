@@ -23,16 +23,24 @@ def input_digit(symbol):
     elements = entry.get()
     if len(elements) <= 13:                              # Поле ввода ограничено 13-ю символами
         if symbol not in '/*+-':
-            entry.insert(END, symbol)
-        else:                                            # Если попалось математическое действие, то проверяем, было ли
-            count = 0                                    # ранее введено мат. действие, если было - сперва выполняем
-            for j in elements:                           # расчёт, выводим в поле ввода и добавляем знак мат. действия
-                if not j.isdigit() and j != '.':
+            entry.insert(END, symbol)                    # если цифра, то вводим
+        elif symbol in '/*+-' and len(elements) > 0:
+            count = 0
+            for i in elements:
+                if i in '/*+-':
                     count += 1
-            if count > 0:
-                calculate(symbol)
-            else:
+            if count == 0:
                 entry.insert(END, symbol)
+            elif count == 1:
+                if elements.startswith('-') or (symbol == '-' and elements[-1] in '*/+-'):
+                    entry.insert(END, symbol)
+                elif elements[-1].isdigit():
+                    calculate(symbol)
+            elif count == 2:
+                if elements.startswith('-') and symbol == '-' and elements[-1] in '*/+-':
+                    entry.insert(END, symbol)
+            elif count > 2 and elements.count('-') == 2:
+                calculate(symbol)
 
 
 def clear():                         # Очистка поля ввода
@@ -44,7 +52,7 @@ def clear_last():                    # Удаление последнего э�
     entry.delete(len(elements) - 1)
 
 
-def calculate():                 # Вызывается при нажатии знака "равно" или использовании
+def calculate(symbol=''):                 # Вызывается при нажатии знака "равно" или использовании
     elements = entry.get()       # -1231241/1231231
     math_signs = '+/-*'
     has_sign = False
@@ -58,40 +66,50 @@ def calculate():                 # Вызывается при нажатии з
         temp = elements[0]
         sign = ''
         for i in range(1, len(elements)):
-            if elements[i].isdigit():
+            if elements[i].isdigit() or elements[i] == '.':
                 temp += elements[i]
             elif elements[i] in '*+/-' and elements[i - 1].isdigit():
-                digits.append(int(temp))           # если calculate вызывается со знаком равно - просто считаем, а если с
+                digits.append(float(temp))           # если calculate вызывается со знаком равно - просто считаем, а если с
                 temp = ''                          # другим знаком - этот знак добавим в конце выражения
                 sign += elements[i]
             elif elements[i] == '-' and elements[i - 1] in '*/-+' and elements[i + 1].isdigit():
                 temp += elements[i]
-        digits.append(int(temp))
+        digits.append(float(temp))
 
         if sign == '+':
-            entry.insert(END, calc_sum(digits[0], digits[1]))
+            entry.insert(END, str(calc_sum(digits[0], digits[1])) + symbol)
         elif sign == '-':
-            entry.insert(END, calc_diff(digits[0], digits[1]))
+            entry.insert(END, str(calc_diff(digits[0], digits[1])) + symbol)
         elif sign == '/':
-            entry.insert(END, calc_div(digits[0], digits[1]))
+            entry.insert(END, str(calc_div(digits[0], digits[1])) + symbol)
         else:
-            entry.insert(END, calc_mult(digits[0], digits[1]))
+            entry.insert(END, str(calc_mult(digits[0], digits[1])) + symbol)
 
 
 def calc_sum(a, b):
-    return a + b
+    if a + b == int(a + b):
+        return int(a + b)
+    return round(a + b, 11)
 
 
 def calc_diff(a, b):
-    return a - b
+    if a - b == int(a - b):
+        return int(a - b)
+    return round(a - b, 11)
 
 
 def calc_mult(a, b):
-    return a * b
+    if a * b == int(a * b):
+        return int(a * b)
+    return round(a * b, 11)
 
 
 def calc_div(a, b):
-    return a / b
+    if b == 0:
+        return 0
+    if a / b == int(a / b):
+        return int(a / b)
+    return round(a / b, 11)
 
 
 entry = Entry(window, width=13, font=('', 20))
