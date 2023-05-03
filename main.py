@@ -44,19 +44,38 @@ def clear_last():                    # Удаление последнего э�
     entry.delete(len(elements) - 1)
 
 
-def calculate(calc_sign):                 # Вызывается при нажатии знака "равно" или использовании
+def calculate():                 # Вызывается при нажатии знака "равно" или использовании
     elements = entry.get()       # -1231241/1231231
-    digits = []
-    temp = elements[0]
-    sign = ''
+    math_signs = '+/-*'
+    has_sign = False
     for i in elements[1:]:
-        if i.isdigit():
-            temp += i
+        if i in math_signs:
+            has_sign = True
+            break
+    if elements and has_sign:
+        clear()
+        digits = []
+        temp = elements[0]
+        sign = ''
+        for i in range(1, len(elements)):
+            if elements[i].isdigit():
+                temp += elements[i]
+            elif elements[i] in '*+/-' and elements[i - 1].isdigit():
+                digits.append(int(temp))           # если calculate вызывается со знаком равно - просто считаем, а если с
+                temp = ''                          # другим знаком - этот знак добавим в конце выражения
+                sign += elements[i]
+            elif elements[i] == '-' and elements[i - 1] in '*/-+' and elements[i + 1].isdigit():
+                temp += elements[i]
+        digits.append(int(temp))
+
+        if sign == '+':
+            entry.insert(END, calc_sum(digits[0], digits[1]))
+        elif sign == '-':
+            entry.insert(END, calc_diff(digits[0], digits[1]))
+        elif sign == '/':
+            entry.insert(END, calc_div(digits[0], digits[1]))
         else:
-            digits.append(int(temp))           # если calculate вызывается со знаком равно - просто считаем, а если с
-            temp = ''                          # другим знаком - этот знак добавим в конце выражения
-            sign += i
-    digits.append(int(temp))
+            entry.insert(END, calc_mult(digits[0], digits[1]))
 
 
 def calc_sum(a, b):
@@ -126,7 +145,7 @@ button_dot.place(x=100, y=250, width=50, height=50)
 button_ce = Button(window, bg='black', fg='yellow', text='CE', command=clear)
 button_ce.place(x=50, y=50, width=50, height=50)
 
-button_equals = Button(window, bg='black', fg='yellow', text='=', command=lambda: calculate('='))
+button_equals = Button(window, bg='black', fg='yellow', text='=', command=calculate)
 button_equals.place(x=150, y=250, width=50, height=50)
 
 button_del = Button(window, bg='black', fg='yellow', text='del', command=clear_last)
