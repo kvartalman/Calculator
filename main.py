@@ -58,11 +58,13 @@ def calculate(symbol=''):
     elements = entry.get()
     math_signs = '+/-*'
     has_sign = False
+    word_checker = False
     for i in elements[1:]:
         if i in math_signs:
             has_sign = True
-            break
-    if elements and has_sign and elements[-1].isdigit():
+        if i not in '1234567890/-+*.':
+            word_checker = True
+    if elements and has_sign and elements[-1].isdigit() and not word_checker:
         clear()
         digits = []
         temp = elements[0]
