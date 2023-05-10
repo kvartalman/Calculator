@@ -67,8 +67,6 @@ def input_not_operators(symbol):
                 entry.insert(END, symbol)
 
 
-
-
 def clear():
     entry.delete(0, END)
 
